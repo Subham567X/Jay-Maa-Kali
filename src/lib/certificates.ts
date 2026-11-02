@@ -146,7 +146,9 @@ export async function generateCertificatePDF(cert: {
   achievementTitle: string;
   metadata?: any;
 }): Promise<string> {
-  const certDir = path.join(process.cwd(), "public", "certificates");
+  const certDir = process.env.VERCEL
+    ? path.join("/tmp", "certificates")
+    : path.join(process.cwd(), "public", "certificates");
   if (!fs.existsSync(certDir)) {
     fs.mkdirSync(certDir, { recursive: true });
   }

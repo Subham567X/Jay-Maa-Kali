@@ -67,8 +67,12 @@ export async function GET(req: NextRequest) {
     }
 
     // Locate PDF file
-    const certDir = path.join(process.cwd(), "public", "certificates");
-    const filePath = path.join(certDir, `${certificate.certificateCode}.pdf`);
+    const localDir = path.join(process.cwd(), "public", "certificates");
+    const tmpDir = path.join("/tmp", "certificates");
+    let filePath = path.join(localDir, `${certificate.certificateCode}.pdf`);
+    if (!fs.existsSync(filePath) && fs.existsSync(path.join(tmpDir, `${certificate.certificateCode}.pdf`))) {
+      filePath = path.join(tmpDir, `${certificate.certificateCode}.pdf`);
+    }
 
     if (!fs.existsSync(filePath)) {
       // Regenerate if missing
