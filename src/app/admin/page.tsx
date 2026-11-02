@@ -34,8 +34,36 @@ export default function AdminDashboardPage() {
   });
 
   useEffect(() => {
-    checkAuth();
+    const params = new URLSearchParams(window.location.search);
+    const key = params.get("key") || params.get("pass");
+    if (key) {
+      handleAutoLogin(key);
+    } else {
+      checkAuth();
+    }
   }, []);
+
+  const handleAutoLogin = async (key: string) => {
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: "admin", password: key }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setSession(data.admin);
+        loadDashboardStats();
+        window.history.replaceState({}, document.title, window.location.pathname);
+      } else {
+        checkAuth();
+      }
+    } catch {
+      checkAuth();
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const checkAuth = async () => {
     try {
