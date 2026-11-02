@@ -48,7 +48,7 @@ export async function GET(req: NextRequest) {
 
     let videoUrl = `/media/video/${encodeURIComponent(candidateVideoNames[0])}`;
     let posterUrl = "/media/images/kali_video_poster.jpg";
-    let subtitlesUrl = "/media/subtitles/blessing_subtitles.vtt";
+    let subtitlesUrl: string | null = null;
 
     // Check media asset from database if configured
     const media = await prisma.mediaAsset.findUnique({
@@ -56,9 +56,11 @@ export async function GET(req: NextRequest) {
     });
 
     if (media && media.url) {
-      videoUrl = media.url;
+      videoUrl = media.url.includes("maa_kali_blessing")
+        ? "/media/video/video%201.mp4"
+        : media.url;
       if (media.posterUrl) posterUrl = media.posterUrl;
-      if (media.subtitlesUrl) subtitlesUrl = media.subtitlesUrl;
+      subtitlesUrl = media.subtitlesUrl || null;
     } else {
       // Find the first physically existing candidate file
       for (const name of candidateVideoNames) {

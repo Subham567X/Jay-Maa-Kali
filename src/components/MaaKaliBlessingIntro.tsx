@@ -302,18 +302,6 @@ export function MaaKaliBlessingIntro({ onComplete, alreadyWatched = false }: Maa
           </button>
         )}
 
-        {/* Missing File Notice if fallback/missing */}
-        {!videoData.fileExists && (
-          <div className="absolute top-4 left-4 right-4 z-30 p-3 rounded-xl bg-amber-950/90 border border-amber-500/60 text-xs text-amber-200 font-bengali flex items-start gap-2 backdrop-blur-sm">
-            <ShieldAlert className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-            <div>
-              <p className="font-bold">প্রকল্প নির্দেশিকা (ভিডিও ফাইল):</p>
-              <p className="text-[11px] text-amber-300/80">
-                পূজা কমিটির নিজস্ব ভিডিও ফাইলটি <code className="font-mono bg-black/40 px-1 py-0.5 rounded">public/media/video/maa_kali_blessing.mp4</code> স্থানে আপলোড করুন অথবা অ্যাডমিন মিডিয়া ট্যাব থেকে ফাইল সংযুক্ত করুন।
-              </p>
-            </div>
-          </div>
-        )}
 
         {/* Video Controls Bar */}
         <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/95 via-black/80 to-transparent p-3 sm:p-4 flex flex-col gap-2 z-20 opacity-90 group-hover:opacity-100 transition-opacity">

@@ -258,21 +258,12 @@ async function main() {
   const defaultAssets = [
     {
       assetKey: "blessing_video",
-      title: "মা কালীর আশীর্বাদ ও স্নেহবাণী",
+      title: "মা কালীর আশীর্বাদ ও স্নেহবাণী (ভিডিও ১)",
       type: "VIDEO",
-      url: "/media/video/maa_kali_blessing.mp4",
+      url: "/media/video/video%201.mp4",
       posterUrl: "/media/images/kali_video_poster.jpg",
-      subtitlesText: `WEBVTT
-
-00:00.000 --> 00:05.000
-নকুন্ডা কালীপূজা ২০২৬-এ উপস্থিত সকল ভক্ত ও সন্তানদের প্রতি মা কালীর অনন্ত আশীর্বাদ।
-
-00:05.500 --> 00:11.000
-তোমাদের জীবন আলো, ভক্তি, আনন্দ ও স্নেহে পরিপূর্ণ হয়ে উঠুক।
-
-00:11.500 --> 00:18.000
-সকল ভয় ও সংকট দূর করে তোমরা সত্য ও মানবতার পথে এগিয়ে চলো। জয় মা কালী!`,
-      durationSeconds: 18,
+      subtitlesText: null,
+      durationSeconds: 0,
     },
     {
       assetKey: "devotional_song",
