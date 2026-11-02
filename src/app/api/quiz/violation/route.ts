@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { processQuizViolation } from "@/lib/security";
 import { verifyParticipantRequest } from "@/lib/session";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     const session = await verifyParticipantRequest(req);

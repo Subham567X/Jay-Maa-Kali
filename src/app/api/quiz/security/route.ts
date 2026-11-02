@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { getQuizSecuritySettings } from "@/lib/security";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const settings = await getQuizSecuritySettings();

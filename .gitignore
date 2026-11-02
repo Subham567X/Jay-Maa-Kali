@@ -39,7 +39,10 @@ next-env.d.ts
 *.db-journal
 *.db-shm
 *.db-wal
+!prisma/dev.db
 
 # Generated certificates
 /public/certificates/*.pdf
 !/public/certificates/.gitkeep
+
+.vercel

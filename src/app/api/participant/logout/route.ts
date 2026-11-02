@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
+export const dynamic = "force-dynamic";
+
 const PARTICIPANT_COOKIE = "nakunda_participant_session";
 
 export async function POST() {

@@ -3,6 +3,8 @@ import { registerFamilyPack } from "@/lib/family";
 import { signParticipantToken, setParticipantCookie } from "@/lib/session";
 import { syncParticipantRegistration } from "@/lib/sheets";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();

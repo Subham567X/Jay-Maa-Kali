@@ -9,6 +9,8 @@ import {
   autoGenerateFamilyCertificate,
 } from "@/lib/certificates";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     const session = await verifyParticipantRequest(req);

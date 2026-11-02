@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { verifyParticipantRequest } from "@/lib/session";
 import { getQuizSecuritySettings, STRICT_EXIT_MESSAGE_BN } from "@/lib/security";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     const session = await verifyParticipantRequest(req);

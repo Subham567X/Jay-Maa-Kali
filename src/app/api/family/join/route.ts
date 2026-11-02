@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { joinExistingFamilyPack } from "@/lib/family";
 import { signParticipantToken, setParticipantCookie } from "@/lib/session";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();

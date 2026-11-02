@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { verifyAdminRequest, logAdminAction } from "@/lib/auth";
 import { determineProvisionalWinner, getCalculatedLeaderboard } from "@/lib/winner";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: NextRequest) {
   try {
     const admin = await verifyAdminRequest(req);

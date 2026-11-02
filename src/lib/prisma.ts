@@ -7,9 +7,17 @@ import path from "path";
 if (process.env.VERCEL) {
   try {
     const tmpDbPath = path.join("/tmp", "dev.db");
-    const localDbPath = path.join(process.cwd(), "dev.db");
-    if (!fs.existsSync(tmpDbPath) && fs.existsSync(localDbPath)) {
-      fs.copyFileSync(localDbPath, tmpDbPath);
+    const candidates = [
+      path.join(process.cwd(), "prisma", "dev.db"),
+      path.join(process.cwd(), "dev.db"),
+    ];
+    if (!fs.existsSync(tmpDbPath)) {
+      for (const candidate of candidates) {
+        if (fs.existsSync(candidate)) {
+          fs.copyFileSync(candidate, tmpDbPath);
+          break;
+        }
+      }
     }
     process.env.DATABASE_URL = `file:${tmpDbPath}`;
   } catch (err) {
