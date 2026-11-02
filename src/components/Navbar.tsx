@@ -5,7 +5,7 @@ import Link from "next/navigation";
 import { usePathname } from "next/navigation";
 import { 
   Menu, X, Sparkles, Video, Music, BookOpen, 
-  HelpCircle, Trophy, Award, Heart, Shield, Users 
+  HelpCircle, Trophy, Award, Heart, Users 
 } from "lucide-react";
 import { DiyaFlame } from "./DiyaFlame";
 
@@ -97,14 +97,6 @@ export function Navbar() {
                 কুইজে অংশ নাও
               </a>
             )}
-
-            <a
-              href="/admin"
-              title="কমিটি অ্যাডমিন প্যানেল"
-              className="p-1.5 text-slate-400 hover:text-amber-300 transition-colors"
-            >
-              <Shield className="w-4 h-4" />
-            </a>
           </div>
 
           {/* Mobile Menu Button */}
@@ -157,11 +149,8 @@ export function Navbar() {
             })}
           </div>
 
-          <div className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
-            <span>নকুন্ডা সর্বজনীন কালীপূজা ২০২৬</span>
-            <a href="/admin" className="text-amber-400 hover:underline flex items-center gap-1">
-              <Shield className="w-3.5 h-3.5" /> অ্যাডমিন
-            </a>
+          <div className="mt-4 pt-3 border-t border-slate-800 text-center text-xs text-slate-500 font-bengali">
+            <span>নকুন্ডা সর্বজনীন কালীপূজা ২০২৬ • মায়ের আশীর্বাদ</span>
           </div>
         </div>
       )}
