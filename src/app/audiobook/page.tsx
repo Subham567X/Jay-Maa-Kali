@@ -31,14 +31,23 @@ export default function AudiobookPage() {
   }
   const chapters: AudiobookChapter[] = [
     {
+      id: "full",
+      number: 0,
+      title: "মা কালীর সম্পূর্ণ মহিমা (একটানা শ্রবণ)",
+      subtitle: "ভিডিও ৩-এর সম্পূর্ণ আসল অডিওবুক পাঠ (একটানা ৩ মিনিট ৪৪ সেকেন্ড)",
+      audioSrc: "/media/audio/audiobook_video_audio.mp3",
+      durationSeconds: 224,
+      summary: "মা ভবতারিণীর পুণ্য আবির্ভাব, অপার্থিব মহিমা, দিব্য দর্শন ও ভক্তের প্রতি বাৎসল্য প্রেমের সম্পূর্ণ পাঠ একসঙ্গে শুনুন।",
+    },
+    {
       id: "ch1",
       number: 1,
       title: "মা কালীর আবির্ভাব",
       subtitle: "দেবী কৌশিকীর ললাট থেকে অন্ধকার বিনাশিনী মহাশক্তির প্রকাশ",
       audioSrc: "/media/audio/audiobook_ch1.mp3",
-      durationSeconds: 420,
+      durationSeconds: 45,
       summary:
-        "শ্রীশ্রী চণ্ডী অনুসারে কীভাবে অসুর রক্তবীজ ও চণ্ড-মুণ্ডের অত্যাচারে পৃথিবী ত্রস্ত হলে দেবী দুর্গার ভ্রূকুটি থেকে ভীষণা মা কালীর প্রাদুর্ভাব হয় এবং বিশ্বব্রহ্মাণ্ড রক্ষা পায়।",
+        "শ্রীশ্রী চণ্ডী অনুসারে কীভাবে অসুর রক্তবীজ ও চণ্ড-মুণ্ডের অত্যাচারে পৃথিবী ত্রস্ত হলে দেবী দুর্গার ভ্রূকুটি থেকে ভীষণা মা কালীর প্রাদুর্ভাব হয়।",
     },
     {
       id: "ch2",
@@ -46,9 +55,9 @@ export default function AudiobookPage() {
       title: "মা কালীর মহিমা ও মহাশক্তির রূপ",
       subtitle: "দশমহাবিদ্যার আদ্যাশক্তি ও রূপক অর্থের আধ্যাত্মিক ব্যাখ্যা",
       audioSrc: "/media/audio/audiobook_ch2.mp3",
-      durationSeconds: 380,
+      durationSeconds: 45,
       summary:
-        "মা কালীর শ্যামল কৃষ্ণবর্ণ, এলোকেশী রূপ, নরমুণ্ড মালা ও খড়্গের গভীর দার্শনিক তাৎপর্য—কীভাবে তা মানুষের অহংকার চূর্ণ করে পরম চৈতন্য জাগ্রত করে।",
+        "মা কালীর শ্যামল কৃষ্ণবর্ণ, এলোকেশী রূপ, নরমুণ্ড মালা ও খড়্গের গভীর দার্শনিক তাৎপর্য—কীভাবে তা মানুষের অহংকার চূর্ণ করে।",
     },
     {
       id: "ch3",
@@ -56,7 +65,7 @@ export default function AudiobookPage() {
       title: "মা কালীর ভক্তের প্রতি অপার্থিব ভালোবাসা",
       subtitle: "সাধক রামপ্রসাদ, কমলাকান্ত ও ভক্তের ডাকে মায়ের সাড়া",
       audioSrc: "/media/audio/audiobook_ch3.mp3",
-      durationSeconds: 450,
+      durationSeconds: 45,
       summary:
         "সাধক রামপ্রসাদের বেড়া বাঁধার সময় স্বয়ং মা কন্যারূপে এসে সাহায্য করার চিরমধুর ভক্তিবৃত্তান্ত এবং মায়ের অপার বাৎসল্য প্রেম।",
     },
@@ -66,7 +75,7 @@ export default function AudiobookPage() {
       title: "মা কালীর আশীর্বাদ ও শরণাগতি",
       subtitle: "দক্ষিণেশ্বরে ঠাকুর শ্রীরামকৃষ্ণের প্রত্যক্ষ মাতৃদর্শন",
       audioSrc: "/media/audio/audiobook_ch4.mp3",
-      durationSeconds: 410,
+      durationSeconds: 45,
       summary:
         "দক্ষিণেশ্বর ভবতারিণীর মন্দিরে ঠাকুর শ্রীরামকৃষ্ণের ব্যাকুল প্রার্থনা, জগন্মাতার চৈতন্যময়ী জ্যোতির্দর্শন এবং শরণাগতির অমৃতময়ী শিক্ষা।",
     },
@@ -76,7 +85,7 @@ export default function AudiobookPage() {
       title: "ভক্তি, সাহস ও মানবতার শিক্ষা",
       subtitle: "মাতৃপূজার আধুনিক জীবনবোধ ও সৌভ্রাতৃত্বের আহ্বান",
       audioSrc: "/media/audio/audiobook_ch5.mp3",
-      durationSeconds: 390,
+      durationSeconds: 44,
       summary:
         "কালীপূজা কেবল আচার নয়—সমাজে নারীশক্তিকে শ্রদ্ধা, অন্যায়ের বিরুদ্ধে সাহস ও সর্বজীবে ঈশ্বরদর্শনই মায়ের শ্রেষ্ঠ আশীর্বাদ।",
     },
@@ -98,7 +107,7 @@ export default function AudiobookPage() {
           মায়ের মহিমা – বিশেষ অডিওবুক
         </h1>
         <p className="text-sm sm:text-base text-slate-300 font-bengali mt-2">
-          শ্রবণ করো মা ভবতারিণীর পুণ্য আবির্ভাব, অপার্থিব মহিমা, অলৌকিক লীলা ও মানবকল্যাণের ৫টি অমৃতময় অধ্যায়।
+          মা ভবতারিণীর পুণ্য আবির্ভাব, অপার্থিব মহিমা ও অলৌকিক লীলাকথা। আপনি চাইলে ভিডিও ৩-এর মাধ্যমে দর্শন করতে পারেন অথবা নিচের অডিওবুক প্লেয়ারে সম্পূর্ণ বা অধ্যায়ভিত্তিক অডিও শ্রবণ করতে পারেন।
         </p>
       </div>
 
@@ -107,12 +116,12 @@ export default function AudiobookPage() {
         <div className="w-full mb-8 space-y-3">
           <div className="flex items-center gap-2 text-amber-300 text-sm font-bengali font-bold">
             <Video className="w-4 h-4 text-amber-400" />
-            <span>মায়ের মহিমা অডিওবুক ভিডিও দর্শন (Video 3)</span>
+            <span>মায়ের মহিমা অডিওবুক ভিডিও দর্শন (ভিডিও ৩)</span>
           </div>
           <VideoPlayer
             src={videoSrc}
             poster="/media/images/audiobook_cover.jpg"
-            title="মায়ের মহিমা অডিওবুক (ভিডিও)"
+            title="মায়ের মহিমা অডিওবুক (ভিডিও ৩)"
           />
         </div>
       )}
