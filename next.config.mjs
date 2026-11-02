@@ -4,6 +4,30 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  async redirects() {
+    return [
+      {
+        source: "/admin/login",
+        destination: "/admin",
+        permanent: false,
+      },
+      {
+        source: "/adnmin",
+        destination: "/admin",
+        permanent: false,
+      },
+      {
+        source: "/adnmin/:path*",
+        destination: "/admin/:path*",
+        permanent: false,
+      },
+      {
+        source: "/login",
+        destination: "/admin",
+        permanent: false,
+      },
+    ];
+  },
   async rewrites() {
     return [
       {
