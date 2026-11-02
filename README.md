@@ -24,6 +24,8 @@
 👉 **[সরাসরি ক্লিক করে অ্যাডমিন প্যানেলে প্রবেশ করুন (Live Vercel)](https://jay-maa-kali.vercel.app/api/auth/quick-login?key=NakundaMaa@2026)**  
 *(উপরের লিঙ্কে ক্লিক করলেই কোনো আইডি বা পাসওয়ার্ড টাইপ না করেই স্বয়ংক্রিয়ভাবে অ্যাডমিন প্যানেল ওপেন হয়ে যাবে)*
 
+- 📱 **অ্যাডমিন অটো-লগইন QR কোড (PNG):** [ডাউনলোড করুন](/public/media/images/kali_puja_admin_qr.png)
+- 📐 **অ্যাডমিন অটো-লগইন ভেক্টর QR কোড (SVG):** [ডাউনলোড করুন](/public/media/images/kali_puja_admin_qr.svg)
 - **বিকল্প অটো-লগইন লিঙ্ক (Live):** [https://jay-maa-kali.vercel.app/admin?key=NakundaMaa@2026](https://jay-maa-kali.vercel.app/admin?key=NakundaMaa@2026)
 - **লোকালহোস্ট অটো-লগইন লিঙ্ক:** [http://localhost:3000/api/auth/quick-login?key=NakundaMaa@2026](http://localhost:3000/api/auth/quick-login?key=NakundaMaa@2026)
 
