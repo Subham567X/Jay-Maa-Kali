@@ -1,0 +1,260 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model AdminUser {
+  id           String   @id @default(uuid())
+  username     String   @unique
+  passwordHash String
+  name         String
+  role         String   @default("ADMIN")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Participant {
+  id                   String          @id @default(uuid())
+  code                 String          @unique // e.g. MK-2026-XXXX
+  name                 String
+  normalizedName       String          // Lowercase, stripped extra spaces & punctuation
+  mobileNumber         String?         // 10-digit Indian mobile number
+  pinHash              String          @default("2026") // 4-digit PIN for returning logins
+  isCommittee          Boolean         @default(false)
+  committeeMatchReason String?
+  blessingVideoCompleted Boolean       @default(false)
+  blessingVideoWatchedAt DateTime?
+  isFamilyHead         Boolean         @default(false)
+  familyPackId         String?
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+  familyPack           FamilyPack?     @relation(fields: [familyPackId], references: [id], onDelete: SetNull)
+  attempts             QuizAttempt[]
+  winnerApproval       WinnerApproval?
+  certificates         Certificate[]
+}
+
+model FamilyPack {
+  id                      String        @id @default(uuid())
+  familyId                String        @unique // e.g. FAM-2026-4821
+  familyHeadName          String
+  mobileNumber            String        // Shared 10-digit Indian Mobile Number of Family Head
+  memberCount             Int           @default(5) // 5 to 10
+  isLocked                Boolean       @default(true) // Permanently locked after registration
+  familyScore             Int           @default(0) // Sum of all members' combined scores
+  maxPossibleScore        Int           @default(500) // memberCount * 100
+  achievementPercentage   Float         @default(0)
+  isEligibleForCertificate Boolean      @default(false) // percentage >= 40%
+  createdAt               DateTime      @default(now())
+  updatedAt               DateTime      @updatedAt
+  members                 Participant[]
+  certificates            Certificate[]
+}
+
+model CommitteeMember {
+  id             String   @id @default(uuid())
+  name           String
+  normalizedName String
+  aliases        String   // JSON array of string variations & phonetic spellings
+  notes          String?
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model QuizEvent {
+  id               String         @id @default(uuid())
+  dayNumber        Int            // 1 = Kali Puja, 2 = Bhai Phonta
+  slug             String         @unique // "kali-puja", "bhai-phonta"
+  title            String
+  subtitle         String
+  description      String
+  timeLimitSeconds Int            @default(3600) // 60 minutes
+  totalQuestions   Int            @default(50)
+  isOpen           Boolean        @default(true)
+  isLocked         Boolean        @default(false)
+  opensAt          DateTime?
+  closesAt         DateTime?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  questions        QuizQuestion[]
+  attempts         QuizAttempt[]
+}
+
+model QuizQuestion {
+  id             String       @id @default(uuid())
+  quizEventId    String
+  questionNumber Int          // 1 to 50
+  questionText   String
+  explanation    String?
+  isActive       Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  quizEvent      QuizEvent    @relation(fields: [quizEventId], references: [id], onDelete: Cascade)
+  options        QuizOption[]
+
+  @@unique([quizEventId, questionNumber])
+}
+
+model QuizOption {
+  id         String       @id @default(uuid())
+  questionId String
+  optionKey  String       // 'A', 'B', 'C', 'D'
+  optionText String
+  isCorrect  Boolean      @default(false) // Server-side only
+  question   QuizQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([questionId, optionKey])
+}
+
+model QuizAttempt {
+  id                    String          @id @default(uuid())
+  participantId         String
+  quizEventId           String
+  startedAt             DateTime        @default(now())
+  submittedAt           DateTime?
+  durationSeconds       Int             @default(0)
+  score                 Int             @default(0) // 0-50
+  isCompleted           Boolean         @default(false)
+  status                String          @default("IN_PROGRESS") // "IN_PROGRESS", "PROCESSING", "COMPLETED", "INVALIDATED", "DISQUALIFIED"
+  isInvalidated         Boolean         @default(false)
+  invalidationReason    String?
+  invalidationDetails   String?
+  warningCount          Int             @default(0)
+  videoCompleted        Boolean         @default(false)
+  videoCompletedAt      DateTime?
+  reviewedByAdmin       Boolean         @default(false)
+  adminReviewNotes      String?
+  shuffledQuestionsJson String?         // Persistent randomized question sequence & option order per participant attempt
+  answersJson           String          @default("{}") // JSON string of questionId -> selectedOptionKey
+  resultAvailableAt     DateTime?       // 2-minute processing delay timer (submittedAt + 120s)
+  reviewAccessedAt      DateTime?       // Server-side enforcement of 1-time answer review access
+  clientIp              String?
+  userAgent             String?
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+  participant           Participant     @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  quizEvent             QuizEvent       @relation(fields: [quizEventId], references: [id], onDelete: Cascade)
+  violations            QuizViolation[]
+
+  @@unique([participantId, quizEventId])
+}
+
+model QuizViolation {
+  id              String      @id @default(uuid())
+  attemptId       String
+  eventType       String      // TAB_SWITCH, WINDOW_BLUR, FULLSCREEN_EXIT, PAGE_LEAVE, BACK_NAVIGATION, DEVTOOLS
+  warningNumber   Int         @default(1)
+  details         String?
+  clientTimestamp DateTime?
+  createdAt       DateTime    @default(now())
+  attempt         QuizAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+}
+
+model QuizSecuritySetting {
+  id                String   @id @default("default")
+  requireFullscreen Boolean  @default(true)
+  tabSwitchWarning  Boolean  @default(true)
+  maxWarnings       Int      @default(2)
+  invalidateOnExit  Boolean  @default(true)
+  allowRefresh      Boolean  @default(true)
+  canAdminReview    Boolean  @default(true)
+  warningMessageBn  String?  @default("কুইজ চলাকালীন অন্য কোনো ওয়েবসাইট, Google, AI টুল অথবা অন্য অ্যাপ ব্যবহার করা সম্পূর্ণ নিষিদ্ধ। কুইজ চলাকালীন পৃষ্ঠা থেকে বেরিয়ে গেলে আপনার পরীক্ষা বাতিল হতে পারে।")
+  updatedAt         DateTime @default(now()) @updatedAt
+}
+
+model Certificate {
+  id               String       @id @default(uuid())
+  certificateCode  String       @unique // e.g. NKP-2026-0001, FAM-2026-0001
+  type             String       @default("INDIVIDUAL") // "INDIVIDUAL" | "FAMILY"
+  participantId    String?
+  familyPackId     String?
+  recipientName    String       // Individual name or Family Head name
+  kaliPujaScore    Int          @default(0)
+  bhaiPhontaScore  Int          @default(0)
+  combinedScore    Int          @default(0)
+  maxScore         Int          @default(100) // 100 for individual, memberCount * 100 for family
+  percentage       Float        @default(0)
+  grade            String       @default("A") // O, A+, A, B+, B, C, D
+  achievementTitle String       // Bengali + English title
+  status           String       @default("GENERATED") // PENDING, PROCESSING, GENERATED, FAILED
+  pdfPath          String?      // Local file or public path
+  metadataJson     String?      // Stored JSON data (e.g. member details, timestamps)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  participant      Participant? @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  familyPack       FamilyPack?  @relation(fields: [familyPackId], references: [id], onDelete: Cascade)
+}
+
+model EventConfiguration {
+  id                  String   @id @default("default")
+  kaliPujaDate        String   @default("2026-11-08") // YYYY-MM-DD
+  bhaiPhontaDate      String   @default("2026-11-10") // YYYY-MM-DD (Configurable central date)
+  quizDurationMinutes Int      @default(60) // 60 minutes
+  openHour            Int      @default(6) // 6:00 AM
+  closeHour           Int      @default(23) // 11:59 PM
+  closeMinute         Int      @default(59)
+  timezone            String   @default("Asia/Kolkata")
+  updatedAt           DateTime @default(now()) @updatedAt
+}
+
+model WinnerApproval {
+  id                      String      @id @default(uuid())
+  participantId           String      @unique
+  participantName         String
+  day1Score               Int
+  day2Score               Int
+  combinedScore           Int
+  combinedDurationSeconds Int
+  status                  String      @default("PROVISIONAL") // PROVISIONAL, APPROVED, PUBLISHED
+  certificateCode         String      @unique // e.g. CERT-MK2026-WINNER
+  approvedBy              String?
+  approvedAt              DateTime?
+  notes                   String?
+  createdAt               DateTime    @default(now())
+  updatedAt               DateTime    @updatedAt
+  participant             Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+}
+
+model MediaAsset {
+  id            String   @id @default(uuid())
+  assetKey      String   @unique // blessing_video, devotional_song, audiobook_ch1..ch5, etc.
+  title         String
+  type          String   // VIDEO, AUDIO, IMAGE
+  url           String
+  posterUrl     String?
+  subtitlesUrl  String?
+  subtitlesText String?
+  durationSeconds Int    @default(0)
+  metadataJson  String?
+  updatedAt     DateTime @default(now()) @updatedAt
+}
+
+model AuditLog {
+  id            String   @id @default(uuid())
+  adminUsername String
+  action        String
+  targetType    String
+  targetId      String?
+  detailsJson   String?
+  ipAddress     String?
+  createdAt     DateTime @default(now())
+}
+
+model GoogleSheetSetting {
+  id              String    @id @default("default")
+  webhookUrl      String?   // Google Apps Script Web App URL
+  sheetUrl        String?   // Viewable Google Sheet URL for Admin direct access
+  isEnabled       Boolean   @default(true)
+  syncOnRegister  Boolean   @default(true)
+  syncOnSubmit    Boolean   @default(true)
+  lastSyncAt      DateTime?
+  lastSyncStatus  String?   // "SUCCESS" | "FAILED" | "PENDING"
+  lastError       String?
+  totalSyncedRows Int       @default(0)
+  updatedAt       DateTime  @default(now()) @updatedAt
+}
