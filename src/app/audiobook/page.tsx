@@ -17,13 +17,17 @@ export default function AudiobookPage() {
     "audiobook_video.mp4",
     "day2_bhai_phonta_quiz.mp4",
   ];
-  let videoSrc: string | null = null;
-  for (const name of candidateVideos) {
-    const fullPath = path.join(process.cwd(), "public", "media", "video", name);
-    if (fs.existsSync(fullPath)) {
-      videoSrc = `/media/video/${name}`;
-      break;
+  let videoSrc = "/media/video/video%203.mp4";
+  try {
+    for (const name of candidateVideos) {
+      const fullPath = path.join(process.cwd(), "public", "media", "video", name);
+      if (fs.existsSync(fullPath)) {
+        videoSrc = `/media/video/${encodeURIComponent(name)}`;
+        break;
+      }
     }
+  } catch {
+    videoSrc = "/media/video/video%203.mp4";
   }
   const chapters: AudiobookChapter[] = [
     {

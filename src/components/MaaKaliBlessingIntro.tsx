@@ -65,25 +65,20 @@ export function MaaKaliBlessingIntro({ onComplete, alreadyWatched = false }: Maa
     if (!video) return;
 
     const tryAutoPlay = () => {
-      video.muted = false;
+      // Start muted to comply with mobile autoplay policies
+      video.muted = true;
+      setIsMuted(true);
+      setNeedsUnmute(true);
+
       const playPromise = video.play();
       if (playPromise !== undefined) {
         playPromise
           .then(() => {
             setIsPlaying(true);
             setHasStarted(true);
-            setIsMuted(false);
-            setNeedsUnmute(false);
           })
-          .catch(() => {
-            // Browser restricted audio autoplay, fallback to muted autoplay
-            video.muted = true;
-            setIsMuted(true);
-            setNeedsUnmute(true);
-            video.play().then(() => {
-              setIsPlaying(true);
-              setHasStarted(true);
-            }).catch(() => {});
+          .catch((err) => {
+            console.warn("Blessing video autoplay deferred:", err);
           });
       }
     };
@@ -92,6 +87,7 @@ export function MaaKaliBlessingIntro({ onComplete, alreadyWatched = false }: Maa
       tryAutoPlay();
     } else {
       video.addEventListener("canplay", tryAutoPlay, { once: true });
+      video.addEventListener("loadeddata", tryAutoPlay, { once: true });
     }
   }, [videoData.url]);
 
@@ -253,13 +249,21 @@ export function MaaKaliBlessingIntro({ onComplete, alreadyWatched = false }: Maa
       >
         <video
           ref={videoRef}
-          src={videoData.url}
           poster={videoData.posterUrl}
           playsInline
+          // @ts-ignore
+          webkit-playsinline="true"
+          x5-playsinline="true"
           autoPlay
-          className="w-full h-full object-cover"
+          muted={isMuted}
+          preload="auto"
+          className="w-full h-full object-cover cursor-pointer"
           onClick={togglePlay}
-        />
+        >
+          <source src={videoData.url} type="video/mp4" />
+          <source src={encodeURI(videoData.url)} type="video/mp4" />
+          আপনার ব্রাউজার ভিডিওটি চালাতে সক্ষম নয়।
+        </video>
 
         {/* Floating Unmute button if browser restricted sound on autoplay */}
         {needsUnmute && isPlaying && (
@@ -273,27 +277,29 @@ export function MaaKaliBlessingIntro({ onComplete, alreadyWatched = false }: Maa
                 setNeedsUnmute(false);
               }
             }}
-            className="absolute top-4 right-4 z-30 flex items-center gap-2 px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-bengali font-bold text-xs shadow-xl transition-transform hover:scale-105 animate-bounce"
+            className="absolute top-4 right-4 z-30 flex items-center gap-2 px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-bengali font-bold text-xs shadow-xl transition-transform hover:scale-105 active:scale-95 animate-bounce"
           >
             <VolumeX className="w-4 h-4 text-red-900" />
-            <span>শব্দ চালু করতে ক্লিক করুন</span>
+            <span>শব্দ চালু করতে স্পর্শ করুন</span>
           </button>
         )}
 
         {/* Start Overlay only if not playing and not started */}
-        {!hasStarted && !isPlaying && (
-          <div
+        {(!hasStarted || !isPlaying) && (
+          <button
+            type="button"
             onClick={togglePlay}
-            className="absolute inset-0 flex flex-col items-center justify-center bg-black/50 backdrop-blur-[2px] cursor-pointer hover:bg-black/40 transition-all z-20"
+            className="absolute inset-0 w-full h-full flex flex-col items-center justify-center bg-black/50 backdrop-blur-[1px] cursor-pointer hover:bg-black/40 transition-all z-20 focus:outline-none"
+            aria-label="মা কালীর আশীর্বাদ ভিডিও চালু করুন"
           >
-            <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-red-600 to-amber-500 text-white flex items-center justify-center shadow-2xl shadow-red-950/80 border-2 border-amber-300 hover:scale-110 transition-transform">
+            <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-red-600 to-amber-500 text-white flex items-center justify-center shadow-2xl shadow-red-950/80 border-2 border-amber-300 hover:scale-110 active:scale-95 transition-transform">
               <Play className="w-9 h-9 fill-current ml-1 text-amber-200" />
             </div>
-            <p className="mt-4 text-sm sm:text-base font-bold font-bengali text-amber-200 bg-black/80 px-4 py-1.5 rounded-full border border-amber-500/40 flex items-center gap-2">
+            <p className="mt-4 text-sm sm:text-base font-bold font-bengali text-amber-200 bg-black/80 px-5 py-2 rounded-full border border-amber-500/50 flex items-center gap-2 shadow-lg">
               <Sparkles className="w-4 h-4 text-amber-300 animate-pulse" />
-              <span>মা কালীর আশীর্বাদ ভিডিও চালু করুন</span>
+              <span>মা কালীর আশীর্বাদ ভিডিও দেখতে স্পর্শ করুন</span>
             </p>
-          </div>
+          </button>
         )}
 
         {/* Missing File Notice if fallback/missing */}

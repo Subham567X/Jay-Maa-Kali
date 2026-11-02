@@ -46,7 +46,7 @@ export async function GET(req: NextRequest) {
           "day1_kali_puja_quiz.mp4",
         ];
 
-    let videoUrl = `/media/video/${candidateVideoNames[0]}`;
+    let videoUrl = `/media/video/${encodeURIComponent(candidateVideoNames[0])}`;
     let posterUrl = "/media/images/kali_video_poster.jpg";
     let subtitlesUrl = "/media/subtitles/blessing_subtitles.vtt";
 
@@ -64,20 +64,22 @@ export async function GET(req: NextRequest) {
       for (const name of candidateVideoNames) {
         const fullPath = path.join(process.cwd(), "public", "media", "video", name);
         if (fs.existsSync(fullPath)) {
-          videoUrl = `/media/video/${name}`;
+          videoUrl = `/media/video/${encodeURIComponent(name)}`;
           break;
         }
       }
     }
 
-    // Check if the physical video file exists on disk
-    let fileExists = false;
+    // Check if the physical video file exists on disk (always true on Vercel/production)
+    let fileExists = Boolean(process.env.VERCEL || process.env.NODE_ENV === "production");
     try {
       const decodedPath = decodeURIComponent(videoUrl.replace(/^\//, ""));
       const physicalPath = path.join(process.cwd(), "public", decodedPath);
-      fileExists = fs.existsSync(physicalPath);
+      if (fs.existsSync(physicalPath)) {
+        fileExists = true;
+      }
     } catch {
-      fileExists = false;
+      // Keep default
     }
 
     return NextResponse.json({

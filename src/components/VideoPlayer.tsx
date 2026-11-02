@@ -61,35 +61,36 @@ export function VideoPlayer({
       if (onEnded) onEnded();
     };
 
-    const handleError = () => setHasError(true);
+    const handleError = () => {
+      const err = video.error;
+      console.warn("Video notice:", err?.code, err?.message);
+      if (err && err.code === 4) {
+        setHasError(true);
+      }
+    };
 
     video.addEventListener("timeupdate", handleTimeUpdate);
     video.addEventListener("loadedmetadata", handleLoadedMetadata);
     video.addEventListener("ended", handleEnded);
     video.addEventListener("error", handleError);
 
-    // Automatic Autoplay Handling
+    // Automatic Autoplay Handling (Mobile-compliant)
     if (autoPlay) {
       const tryAutoPlay = () => {
-        video.muted = false;
+        // Start muted to comply with mobile autoplay policies
+        video.muted = true;
+        setIsMuted(true);
+        setNeedsUnmute(true);
+
         const playPromise = video.play();
         if (playPromise !== undefined) {
           playPromise
             .then(() => {
               setIsPlaying(true);
               setHasStarted(true);
-              setIsMuted(false);
-              setNeedsUnmute(false);
             })
-            .catch(() => {
-              // Browser blocked sound autoplay, fallback to muted autoplay
-              video.muted = true;
-              setIsMuted(true);
-              setNeedsUnmute(true);
-              video.play().then(() => {
-                setIsPlaying(true);
-                setHasStarted(true);
-              }).catch(() => {});
+            .catch((err) => {
+              console.warn("Autoplay deferred until user interaction:", err);
             });
         }
       };
@@ -98,6 +99,7 @@ export function VideoPlayer({
         tryAutoPlay();
       } else {
         video.addEventListener("canplay", tryAutoPlay, { once: true });
+        video.addEventListener("loadeddata", tryAutoPlay, { once: true });
       }
     }
 
@@ -173,12 +175,18 @@ export function VideoPlayer({
     >
       <video
         ref={videoRef}
-        src={src}
         poster={poster}
         playsInline
-        className="w-full aspect-video object-cover"
+        // @ts-ignore
+        webkit-playsinline="true"
+        x5-playsinline="true"
+        preload="auto"
+        muted={isMuted}
+        className="w-full aspect-video object-cover cursor-pointer"
         onClick={togglePlay}
       >
+        <source src={src} type="video/mp4" />
+        <source src={encodeURI(src)} type="video/mp4" />
         {subtitlesSrc && (
           <track
             src={subtitlesSrc}
@@ -188,6 +196,7 @@ export function VideoPlayer({
             default={subtitlesEnabled}
           />
         )}
+        আপনার ব্রাউজার ভিডিওটি চালাতে সক্ষম নয়।
       </video>
 
       {/* End Screen Slot if video finished */}
@@ -198,18 +207,20 @@ export function VideoPlayer({
       )}
 
       {/* Start Overlay Button if not yet played */}
-      {!hasStarted && !isPlaying && !isEnded && (
-        <div
+      {(!hasStarted || !isPlaying) && !isEnded && (
+        <button
+          type="button"
           onClick={togglePlay}
-          className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[2px] cursor-pointer hover:bg-black/30 transition-all z-20"
+          className="absolute inset-0 w-full h-full flex flex-col items-center justify-center bg-black/40 backdrop-blur-[1px] cursor-pointer hover:bg-black/30 transition-all z-20 focus:outline-none"
+          aria-label="ভিডিও চালু করুন"
         >
-          <div className="w-20 h-20 rounded-full bg-red-600/90 text-white flex items-center justify-center shadow-xl shadow-red-900/60 border-2 border-amber-300 hover:scale-110 transition-transform">
+          <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-red-600 to-amber-500 text-white flex items-center justify-center shadow-2xl shadow-red-950/80 border-2 border-amber-300 hover:scale-110 active:scale-95 transition-transform">
             <Play className="w-9 h-9 fill-current ml-1 text-amber-200" />
           </div>
-          <p className="mt-4 text-base sm:text-lg font-bold font-bengali text-amber-200 bg-black/70 px-4 py-1.5 rounded-full border border-amber-500/40">
-            মা কালীর স্নেহাশিস ভিডিও দেখুন
+          <p className="mt-4 text-base sm:text-lg font-bold font-bengali text-amber-200 bg-black/80 px-5 py-2 rounded-full border border-amber-500/50 shadow-lg">
+            {title ? `${title} দেখতে স্পর্শ করুন` : "মা কালীর স্নেহাশিস ভিডিও দেখুন"}
           </p>
-        </div>
+        </button>
       )}
 
       {/* Unmute floating button if browser forced muted autoplay */}
@@ -224,20 +235,30 @@ export function VideoPlayer({
               setNeedsUnmute(false);
             }
           }}
-          className="absolute top-4 right-4 z-30 flex items-center gap-2 px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-bengali font-bold text-xs shadow-lg transition-transform hover:scale-105 animate-bounce"
+          className="absolute top-4 right-4 z-30 flex items-center gap-2 px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-bengali font-bold text-xs shadow-lg transition-transform hover:scale-105 active:scale-95 animate-bounce"
         >
           <VolumeX className="w-4 h-4 text-red-900" />
-          <span>শব্দ চালু করতে ক্লিক করুন</span>
+          <span>শব্দ চালু করতে স্পর্শ করুন</span>
         </button>
       )}
 
-      {/* Error Notice */}
+      {/* Error Notice with Retry */}
       {hasError && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 p-4 text-center z-20">
-          <p className="text-amber-400 font-bold mb-2">ভিডিও লোড করতে বিকল্প স্থান ব্যবহার হচ্ছে</p>
-          <p className="text-xs text-slate-400 max-w-md">
-            ভিডিও ফাইলটি প্রতিস্থাপন করতে অ্যাডমিন প্যানেল (/admin) থেকে নতুন ভিডিও আপলোড করুন।
-          </p>
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/85 p-4 text-center z-20">
+          <p className="text-amber-300 font-bold mb-2 font-bengali">ভিডিও সংযোগ লোড হচ্ছে...</p>
+          <button
+            onClick={() => {
+              setHasError(false);
+              const video = videoRef.current;
+              if (video) {
+                video.load();
+                video.play().catch(() => {});
+              }
+            }}
+            className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-bengali font-bold text-xs shadow-lg transition-transform hover:scale-105 active:scale-95"
+          >
+            পুনরায় চালান ↻
+          </button>
         </div>
       )}
 

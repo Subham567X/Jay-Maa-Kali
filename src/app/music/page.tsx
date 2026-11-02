@@ -25,13 +25,17 @@ export default function MusicPage() {
     "mayer_charane_gaan.mp4",
     "song_video.mp4",
   ];
-  let videoSrc: string | null = null;
-  for (const name of candidateVideos) {
-    const fullPath = path.join(process.cwd(), "public", "media", "video", name);
-    if (fs.existsSync(fullPath)) {
-      videoSrc = `/media/video/${name}`;
-      break;
+  let videoSrc = "/media/video/Video%202.mp4";
+  try {
+    for (const name of candidateVideos) {
+      const fullPath = path.join(process.cwd(), "public", "media", "video", name);
+      if (fs.existsSync(fullPath)) {
+        videoSrc = `/media/video/${encodeURIComponent(name)}`;
+        break;
+      }
     }
+  } catch {
+    videoSrc = "/media/video/Video%202.mp4";
   }
 
   return (
