@@ -24,7 +24,8 @@
 👉 **[সরাসরি ক্লিক করে অ্যাডমিন প্যানেলে প্রবেশ করুন (Live Vercel)](https://jay-maa-kali.vercel.app/api/auth/quick-login?key=NakundaMaa@2026)**  
 *(উপরের লিঙ্কে ক্লিক করলেই কোনো আইডি বা পাসওয়ার্ড টাইপ না করেই স্বয়ংক্রিয়ভাবে অ্যাডমিন প্যানেল ওপেন হয়ে যাবে)*
 
-- 🖼️ **আজীবন ব্যবহারের মা কালী স্পেশাল অ্যাডমিন লিফলেট কার্ড (Lifetime Admin Leaflet):** [ডাউনলোড করুন](/public/media/images/kali_puja_admin_leaflet.jpg)
+- 🖨️ **আজীবন ব্যবহারের অ্যাডমিন লিফলেট পেজ (প্রিন্ট / সেভ PDF):** [https://jay-maa-kali.vercel.app/admin/qr](https://jay-maa-kali.vercel.app/admin/qr)
+- 🖼️ **মা কালী স্পেশাল অ্যাডমিন লিফলেট কার্ড (Lifetime JPG):** [ডাউনলোড করুন](/public/media/images/kali_puja_admin_leaflet.jpg)
 - 📱 **অ্যাডমিন অটো-লগইন QR কোড (PNG):** [ডাউনলোড করুন](/public/media/images/kali_puja_admin_qr.png)
 - 📐 **অ্যাডমিন অটো-লগইন ভেক্টর QR কোড (SVG):** [ডাউনলোড করুন](/public/media/images/kali_puja_admin_qr.svg)
 - **বিকল্প অটো-লগইন লিঙ্ক (Live):** [https://jay-maa-kali.vercel.app/admin?key=NakundaMaa@2026](https://jay-maa-kali.vercel.app/admin?key=NakundaMaa@2026)

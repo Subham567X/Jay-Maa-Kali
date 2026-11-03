@@ -26,6 +26,21 @@ const nextConfig = {
         destination: "/admin",
         permanent: false,
       },
+      {
+        source: "/admin-qr",
+        destination: "/admin/qr",
+        permanent: false,
+      },
+      {
+        source: "/admin/card",
+        destination: "/admin/qr",
+        permanent: false,
+      },
+      {
+        source: "/admin/leaflet",
+        destination: "/admin/qr",
+        permanent: false,
+      },
     ];
   },
   async rewrites() {
